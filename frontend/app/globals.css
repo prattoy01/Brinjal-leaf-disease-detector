@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --aubergine-950: #1c1220;
+  --aubergine-900: #251829;
+  --aubergine-800: #382338;
+  --aubergine-700: #4d3049;
+  --leaf-500: #7c9a5e;
+  --leaf-400: #9bb87f;
+  --rust-500: #b5542a;
+  --rust-400: #c96f45;
+  --cream-100: #f4efe6;
+  --cream-300: #ded4c3;
+  --muted: #a596a3;
+  --border: rgba(244, 239, 230, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--aubergine-950);
+  color: var(--cream-100);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-image: radial-gradient(
+    circle at 15% 0%,
+    var(--aubergine-900) 0%,
+    var(--aubergine-950) 55%
+  );
+  min-height: 100vh;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.display {
+  font-family: "Fraunces", ui-serif, serif;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--rust-500);
+  color: var(--cream-100);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
