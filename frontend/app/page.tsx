@@ -18,18 +18,22 @@ export default function Home() {
     setResult(null);
     setLoading(true);
 
-    // Browsers can't display HEIC — convert to JPEG for preview
+    // Browsers can't display HEIC, and the backend may not support it either.
+    // Convert HEIC → JPEG client-side for both preview and API call.
     const isHeic =
       file.type === "image/heic" ||
       file.type === "image/heif" ||
       file.name.toLowerCase().endsWith(".heic") ||
       file.name.toLowerCase().endsWith(".heif");
 
+    let fileToSend: File | Blob = file;
     let previewUrl: string;
+
     if (isHeic) {
       try {
         const heic2any = (await import("heic2any")).default;
         const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 }) as Blob;
+        fileToSend = new File([blob], file.name.replace(/\.hei[cf]$/i, ".jpg"), { type: "image/jpeg" });
         previewUrl = URL.createObjectURL(blob);
       } catch {
         previewUrl = URL.createObjectURL(file);
@@ -40,7 +44,7 @@ export default function Home() {
     setImageUrl(previewUrl);
 
     try {
-      const res = await predict(file);
+      const res = await predict(fileToSend as File);
       setResult(res);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
