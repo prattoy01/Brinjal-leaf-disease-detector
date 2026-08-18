@@ -16,8 +16,29 @@ export default function Home() {
   async function handleSelect(file: File) {
     setError(null);
     setResult(null);
-    setImageUrl(URL.createObjectURL(file));
     setLoading(true);
+
+    // Browsers can't display HEIC — convert to JPEG for preview
+    const isHeic =
+      file.type === "image/heic" ||
+      file.type === "image/heif" ||
+      file.name.toLowerCase().endsWith(".heic") ||
+      file.name.toLowerCase().endsWith(".heif");
+
+    let previewUrl: string;
+    if (isHeic) {
+      try {
+        const heic2any = (await import("heic2any")).default;
+        const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 }) as Blob;
+        previewUrl = URL.createObjectURL(blob);
+      } catch {
+        previewUrl = URL.createObjectURL(file);
+      }
+    } else {
+      previewUrl = URL.createObjectURL(file);
+    }
+    setImageUrl(previewUrl);
+
     try {
       const res = await predict(file);
       setResult(res);
