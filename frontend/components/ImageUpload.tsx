@@ -14,7 +14,7 @@ export default function ImageUpload({ onSelect, disabled }: Props) {
   const handleFiles = useCallback(
     (files: FileList | null) => {
       const file = files?.[0];
-      if (file && file.type.startsWith("image/")) {
+      if (file && (file.type.startsWith("image/") || file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif"))) {
         onSelect(file);
       }
     },
@@ -47,7 +47,7 @@ export default function ImageUpload({ onSelect, disabled }: Props) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         hidden
         disabled={disabled}
         onChange={(e) => handleFiles(e.target.files)}
@@ -68,7 +68,7 @@ export default function ImageUpload({ onSelect, disabled }: Props) {
         Drop a leaf photo, or click to browse
       </div>
       <div style={{ fontSize: 13, color: "var(--muted)" }}>
-        JPG or PNG · one leaf per scan works best
+        JPG, PNG, or HEIC · one leaf per scan works best
       </div>
     </div>
   );

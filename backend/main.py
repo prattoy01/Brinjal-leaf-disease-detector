@@ -14,6 +14,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from pydantic import BaseModel
 
+# Register HEIC/HEIF support so PIL.Image.open() can handle .heic files
+try:
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+except ImportError:
+    pass  # pillow-heif not installed; HEIC uploads won't work
+
 MODEL_PATH = Path(__file__).parent / "best.onnx"
 IMG_SIZE = 640
 CONF_THRES = 0.25
@@ -120,7 +127,11 @@ def health():
 
 @app.post("/predict", response_model=PredictResponse)
 async def predict(file: UploadFile = File(...)):
-    if file.content_type is None or not file.content_type.startswith("image/"):
+    HEIC_TYPES = {"image/heic", "image/heif", "application/octet-stream"}
+    is_image = file.content_type is not None and (
+        file.content_type.startswith("image/") or file.content_type in HEIC_TYPES
+    )
+    if not is_image:
         raise HTTPException(status_code=400, detail="File must be an image")
 
     import time
